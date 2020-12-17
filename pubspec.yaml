@@ -1,7 +1,7 @@
 name: ej_selector
 description: Item Selector.
-version: 0.0.1
-homepage: https://apexteam.net
+version: 0.0.2
+homepage: https://github.com/EhsnJmli/ej_selector
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

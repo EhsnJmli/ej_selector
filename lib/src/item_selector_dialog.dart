@@ -262,7 +262,7 @@ class _DialogState<T> extends State<_Dialog<T>> {
 
       return Material(
         key: _keys[index],
-        color: Colors.white,
+        color: Colors.transparent,
         child: InkWell(
           onTap: () {
             Navigator.pop(context, item);
@@ -293,8 +293,6 @@ class _DialogState<T> extends State<_Dialog<T>> {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
         builder: (context, constraints) => SimpleDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           children: [
             Container(
               width: widget.dialogWidth,

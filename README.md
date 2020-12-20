@@ -1,14 +1,80 @@
-# ej_selector
+# EJ Selector Button
+A flutter widget that works like dropdown button, except that instead of opening the dropdown to select items, it opens a dialog. Also, You can customize its button and items.
 
-Item Selector.
+## Usage
+You can customize `EJSelectorButton` or use its string factory which is less customizable and easier to use.
 
-## Getting Started
+![](https://i.imgur.com/GN9c96G.gif)
+```dart
+EJSelectorButton.string(
+  items: List.generate(10, (index) => 'item $index'),
+  hint: 'Choose',
+  useValue: false,
+  divider: Divider(),
+  textStyle: TextStyle(fontSize: 18),
+  suffix: Icon(Icons.arrow_drop_down),
+)
+```
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+![](https://i.imgur.com/vVx7uAF.gif)
+```dart
+final items = <ItemModel>[
+  ItemModel(1, 'First Item'),
+  ItemModel(2, 'Second Item'),
+  ItemModel(3, 'Third Item'),
+  ItemModel(4, 'Forth Item'),
+  ItemModel(5, 'Fifth Item'),
+];
+
+EJSelectorButton<ItemModel>(
+ useValue: false,
+ hint: Text(
+	 'Click to choose',
+	 style: TextStyle(fontSize: 16, color: Colors.black),
+ ),
+ buttonBuilder: (child, value) => Container(
+  alignment: Alignment.center,
+  height: 60,
+  width: 150,
+  decoration: BoxDecoration(
+  borderRadius: BorderRadius.circular(4),
+  color: Colors.white,
+ ),
+ child: value != null
+		? Text(
+			value.name,
+			style: TextStyle(fontSize: 16, color: Colors.black),
+		  )
+		: child,
+ ),
+ selectedWidgetBuilder: (valueOfSelected) => Container(
+  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+  child: Text(
+	  valueOfSelected.name,
+	  style: TextStyle(fontSize: 20, color: Colors.blue),
+	 ),
+ ),
+ items: items
+	  .map(
+		 (item) => EJSelectorItem(
+		  value: item,
+		  widget: Container(
+		  padding:
+			  const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+		  child: Text(
+			item.name,
+			style: TextStyle(fontSize: 16),
+		  ),
+		),
+	  ),
+    ).toList(),
+)
+
+class ItemModel {
+  ItemModel(this.id, this.name);
+
+  final int id;
+  final String name;
+}
+```

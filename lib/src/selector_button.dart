@@ -8,67 +8,138 @@ class EJSelectorButton<T> extends StatefulWidget {
   EJSelectorButton({
     Key key,
     @required this.items,
-    @required this.onChange,
-    @required this.mainWidgetBuilder,
+    this.value,
+    this.useValue = true,
+    this.hint,
     this.dialogWidth = 80,
     this.dialogHeight,
-    this.value,
-    this.width,
-    this.height,
-    this.onTap,
-    this.hint,
+    this.buttonBuilder,
     this.selectedWidgetBuilder,
-    this.useValue = true,
-  })  : assert(
-          items == null ||
-              items.isEmpty ||
+    this.onChange,
+    this.divider,
+    this.onTap,
+    this.alwaysShowScrollBar,
+  })  : assert(items != null),
+        assert(
+          items.isEmpty ||
               value == null ||
               items.where((item) => item.value == value).length == 1,
           "There should be exactly one item with [item]'s value: "
-          '$value.'
+          '$value.\n'
           'Either zero or 2 or more [item]s were detected '
           'with the same value',
         ),
         assert(T.runtimeType != Widget,
-            '{DialogSelectButton}\'s type can\'t be {Widget}'),
+            '{EJSelectorButton}\'s type can\'t be {Widget}'),
         assert(useValue != null),
         super(key: key);
 
-  final Widget hint;
-  final T value;
+  /// The list of items the user can select and it's can't be null.
   final List<EJSelectorItem<T>> items;
-  final double dialogHeight, dialogWidth, width, height;
-  final void Function(T value) onChange;
-  final Widget Function(T valueOfSelected) selectedWidgetBuilder;
-  final Widget Function(Widget child, T value) mainWidgetBuilder;
-  final VoidCallback onTap;
+
+  /// The value of the currently selected [EJSelectorItem].
+  ///
+  /// [EJSelectorButton] will use [value] if [useValue] is true;
+  /// If [value] is null and [useValue] is true and [hint] is non-null,
+  /// the [hint] widget is displayed as a placeholder for
+  /// the [EJSelectorButton]'s value.
+  final T value;
+
+  /// Specifies whether to use the value.
+  ///
+  /// defaults to true.
   final bool useValue;
 
-  static EJSelectorButton<String> string(
-          {Key key,
-          @required List<String> items,
-          @required void Function(String) onChange,
-          double dialogWidth = 80,
-          double width,
-          double height,
-          VoidCallback onTap,
-          double itemExtent = 50,
-          String hint,
-          String value,
-          bool underline = true,
-          TextStyle textStyle,
-          TextStyle hintStyle,
-          Widget suffix,
-          Widget prefix,
-          Color underlineColor = Colors.grey,
-          BoxDecoration decoration,
-          Alignment alignment = Alignment.centerRight,
-          EdgeInsets padding =
-              const EdgeInsets.only(bottom: 4, right: 8, left: 8),
-          EdgeInsets margin = EdgeInsets.zero,
-          bool useValue = true}) =>
+  /// A placeholder widget that is displayed by the dropdown button.
+  ///
+  /// If [value] is null, this widget is displayed as a placeholder for
+  /// the [EJSelectorButton]'s value.
+  final Widget hint;
+
+  /// The Height of the dialog which shows for select items.
+  ///
+  /// [dialogHeight] must be lower than screen height - 200.
+  /// If [dialogHeight] is more than screen height - 200, height of the dialog
+  /// will be equal to screen height - 200.
+  /// If [dialogHeight] is null, height of the dialog will be fit to
+  /// height of its children.
+  final double dialogHeight;
+
+  /// The Width of the dialog which shows for select items.
+  ///
+  /// [dialogWidth] must be lower than screen width - 200.
+  /// If [dialogWidth] is more than screen width - 200, width of the dialog
+  /// will be equal to screen width - 200.
+  ///
+  /// defaults to 80.
+  final double dialogWidth;
+
+  /// Custom builder for the main widget of [EJSelectorButton].
+  ///
+  /// [buttonBuilder]'s child will be widget of selected item
+  /// and it's value will be value of selected item, if no item is selected,
+  /// child will be hint and if hint is null, child will be [Container].
+  ///
+  /// If [buttonBuilder] is null or return null,
+  /// main widget of [EJSelectorButton] will be widget of selected item and
+  /// if no item is selected, it will be hint.
+  final Widget Function(Widget child, T value) buttonBuilder;
+
+  /// Custom builder for selected item in dialog.
+  final Widget Function(T valueOfSelected) selectedWidgetBuilder;
+
+  /// Called when the user selects an item.
+  final void Function(T value) onChange;
+
+  /// Called when the dropdown button is tapped.
+  ///
+  /// This is distinct from [onChanged], which is called when the user
+  /// selects an item from the dialog.
+  final VoidCallback onTap;
+
+  /// Custom builder for divider between items in the dialog.
+  final Widget divider;
+
+  /// Indicates whether the scrollbar for the dialog should always be visible.
+  final bool alwaysShowScrollBar;
+
+  static EJSelectorButton<String> string({
+    Key key,
+    @required List<String> items,
+    String value,
+    bool useValue = true,
+    String hint,
+    double dialogWidth = 80,
+    double buttonWidth,
+    double buttonHeight,
+    double itemExtent = 50,
+    void Function(String) onChange,
+    VoidCallback onTap,
+    Widget divider,
+    bool underline = true,
+    TextStyle textStyle,
+    TextStyle hintStyle,
+    Widget suffix,
+    Widget prefix,
+    Color underlineColor = Colors.grey,
+    BoxDecoration decoration,
+    Alignment alignment = Alignment.center,
+    EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    EdgeInsets margin = EdgeInsets.zero,
+    bool alwaysShownScrollbar = false,
+  }) =>
       EJSelectorButton<String>(
-        hint: Text(hint ?? '', style: hintStyle ?? textStyle),
+        hint: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (prefix != null) prefix,
+            Container(
+              alignment: alignment,
+              child: Text(hint ?? '', style: hintStyle ?? textStyle),
+            ).addExpanded(buttonWidth != null),
+            if (suffix != null) suffix,
+          ],
+        ),
         items: List.generate(items.length, (index) {
           final item = items[index];
           return EJSelectorItem<String>(
@@ -84,6 +155,7 @@ class EJSelectorButton<T> extends StatefulWidget {
                 ),
               ));
         }),
+        alwaysShowScrollBar: alwaysShownScrollbar,
         useValue: useValue,
         value: value,
         selectedWidgetBuilder: (value) => Builder(
@@ -98,46 +170,44 @@ class EJSelectorButton<T> extends StatefulWidget {
             ),
           ),
         ),
-        mainWidgetBuilder: (child, value) => Builder(
+        divider: divider,
+        buttonBuilder: (child, value) => Builder(
           builder: (context) => Container(
-            height: height,
-            width: width,
+            height: buttonHeight,
+            width: buttonWidth,
             padding: padding,
             margin: margin,
             alignment: alignment,
             decoration: decoration ??
                 BoxDecoration(
-                    border: underline
-                        ? Border(
-                            bottom: BorderSide(color: underlineColor, width: 2))
-                        : Border()),
+                  border: underline
+                      ? Border(
+                          bottom: BorderSide(color: underlineColor, width: 2))
+                      : Border(),
+                ),
             child: value != null
                 ? Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (prefix != null) prefix,
-                      Expanded(
-                        child: Container(
-                          alignment: alignment,
-                          child: Text(
-                            value,
-                            style: textStyle ??
-                                Theme.of(context).textTheme.bodyText2,
-                          ),
+                      Container(
+                        alignment: alignment,
+                        child: Text(
+                          value,
+                          style: textStyle ??
+                              Theme.of(context).textTheme.bodyText2,
                         ),
-                      ),
+                      ).addExpanded(buttonWidth != null),
                       if (suffix != null) suffix,
                     ],
                   )
                 : child,
           ),
         ),
-        onChange: (value) => onChange(value),
+        onChange: onChange,
         onTap: onTap,
         dialogWidth: dialogWidth,
         dialogHeight: items.length * itemExtent,
-        height: height,
-        width: width,
         key: key,
       );
 
@@ -173,11 +243,12 @@ class _EJSelectorButtonState<T> extends State<EJSelectorButton<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final main = widget.mainWidgetBuilder != null
-        ? widget.mainWidgetBuilder(
-            _selected?.widget ?? widget.hint ?? Container(), _selected?.value)
-        : _selected?.widget ?? widget.hint ?? Container();
-    return main.mouseRegion(
+    final child = _selected?.widget ?? widget.hint ?? Container();
+    final button = widget.buttonBuilder != null
+        ? (widget.buttonBuilder(child, _selected?.value) ?? child)
+        : child;
+
+    return button.mouseRegion(
         cursor: widget.items.isNotEmpty || widget.onTap != null
             ? SystemMouseCursors.click
             : SystemMouseCursors.basic,
@@ -188,8 +259,8 @@ class _EJSelectorButtonState<T> extends State<EJSelectorButton<T>> {
               context: context,
               barrierDismissible: true,
               builder: (context) => _Dialog<T>(
-                height: widget.height,
                 selected: _selected,
+                alwaysShownScrollbar: widget.alwaysShowScrollBar,
                 selectedWidget: (child, value) {
                   if (widget.selectedWidgetBuilder != null) {
                     return widget.selectedWidgetBuilder(value);
@@ -197,10 +268,14 @@ class _EJSelectorButtonState<T> extends State<EJSelectorButton<T>> {
                     return child;
                   }
                 },
+                divider: widget.divider,
                 dialogHeight: widget.dialogHeight,
-                width: widget.width,
                 dialogWidth: widget.dialogWidth,
-                onChange: (item) => widget.onChange(item.value),
+                onChange: (item) {
+                  if (widget.onChange != null) {
+                    widget.onChange(item.value);
+                  }
+                },
                 items: widget.items,
               ),
             );
@@ -211,6 +286,7 @@ class _EJSelectorButtonState<T> extends State<EJSelectorButton<T>> {
           if (widget.onTap != null) {
             widget.onTap();
           }
+          setState(() {});
         });
   }
 }
@@ -222,17 +298,20 @@ class _Dialog<T> extends StatefulWidget {
     @required this.items,
     @required this.onChange,
     @required this.selectedWidget,
+    @required this.alwaysShownScrollbar,
+    this.divider,
     this.dialogHeight,
     this.dialogWidth,
-    this.width,
-    this.height,
   }) : super(key: key);
 
   final EJSelectorItem<T> selected;
   final List<EJSelectorItem<T>> items;
   final void Function(EJSelectorItem<T> item) onChange;
   final Widget Function(Widget child, T value) selectedWidget;
-  final double dialogHeight, dialogWidth, width, height;
+  final Widget divider;
+  final double dialogHeight;
+  final double dialogWidth;
+  final bool alwaysShownScrollbar;
 
   @override
   _DialogState<T> createState() => _DialogState<T>();
@@ -248,12 +327,20 @@ class _DialogState<T> extends State<_Dialog<T>> {
   void initState() {
     _controller = ScrollController();
     _keys = List<GlobalKey>.generate(widget.items.length, (i) => GlobalKey());
-    _children = widget.items.map((item) {
-      final index = widget.items.indexOf(item);
+    final hasDivider = widget.divider != null;
+    _children = List.generate(
+        hasDivider ? widget.items.length * 2 - 1 : widget.items.length,
+        (index) {
+      if (hasDivider && index % 2 != 0) {
+        return widget.divider;
+      }
+
+      final itemIndex = hasDivider ? (index / 2).floor() : index;
+      final item = widget.items[itemIndex];
       final isSelected =
           widget.selected != null && item.value == widget.selected.value;
       if (isSelected) {
-        _selectedItemIndex = index;
+        _selectedItemIndex = itemIndex;
       }
 
       final child = isSelected
@@ -261,7 +348,7 @@ class _DialogState<T> extends State<_Dialog<T>> {
           : item.widget;
 
       return Material(
-        key: _keys[index],
+        key: _keys[itemIndex],
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
@@ -271,7 +358,7 @@ class _DialogState<T> extends State<_Dialog<T>> {
           child: child,
         ),
       );
-    }).toList();
+    });
     if (_selectedItemIndex != null) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         Scrollable.ensureVisible(
@@ -292,10 +379,13 @@ class _DialogState<T> extends State<_Dialog<T>> {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => SimpleDialog(
+        builder: (_, constraints) => SimpleDialog(
           children: [
             Container(
-              width: widget.dialogWidth,
+              width: widget.dialogWidth != null &&
+                      (widget.dialogWidth < (constraints.maxWidth - 200))
+                  ? widget.dialogWidth
+                  : (constraints.maxWidth - 200),
               height: widget.dialogHeight != null
                   ? (widget.dialogHeight < (constraints.maxHeight - 200)
                       ? widget.dialogHeight
@@ -303,7 +393,7 @@ class _DialogState<T> extends State<_Dialog<T>> {
                   : null,
               child: CupertinoScrollbar(
                 controller: _controller,
-                isAlwaysShown: true,
+                isAlwaysShown: widget.alwaysShownScrollbar ?? false,
                 child: SingleChildScrollView(
                   controller: _controller,
                   child: Column(
@@ -323,6 +413,9 @@ class EJSelectorItem<T> {
     @required this.widget,
   }) : assert(value != null && widget != null);
 
+  /// The value of item.
   final T value;
+
+  /// The widget of item.
   final Widget widget;
 }

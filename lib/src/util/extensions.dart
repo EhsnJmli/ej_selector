@@ -60,4 +60,7 @@ extension MouseExtension on Widget {
                   )
             : this,
       );
+
+  Widget addExpanded(bool shouldExpand) =>
+      shouldExpand ? Expanded(child: this) : this;
 }

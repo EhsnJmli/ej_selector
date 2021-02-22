@@ -4,7 +4,8 @@ A flutter widget that works like dropdown button, except that instead of opening
 ## Usage
 You can customize `EJSelectorButton` or use its string factory which is less customizable and easier to use.
 
-![](https://i.imgur.com/GN9c96G.gif)
+<img src="https://i.imgur.com/GN9c96G.gif" width="400" height="700">
+
 ```dart
 EJSelectorButton.string(
   items: List.generate(10, (index) => 'item $index'),
@@ -17,7 +18,8 @@ EJSelectorButton.string(
 ```
 
 
-![](https://i.imgur.com/vVx7uAF.gif)
+<img src="https://i.imgur.com/vVx7uAF.gif" width="400" height="700">
+
 ```dart
 final items = <ItemModel>[
   ItemModel(1, 'First Item'),

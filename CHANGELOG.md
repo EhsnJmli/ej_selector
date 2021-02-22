@@ -1,3 +1,7 @@
+# [0.0.3+1]
+
+- Updated description and readme
+
 ## [0.0.3]
 
 - Added `divider` parameter

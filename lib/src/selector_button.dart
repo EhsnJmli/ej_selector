@@ -1,8 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import './util/extensions.dart';
+
+part 'selector_dialog.dart';
 
 class EJSelectorButton<T> extends StatefulWidget {
   EJSelectorButton({
@@ -118,6 +119,7 @@ class EJSelectorButton<T> extends StatefulWidget {
     Widget divider,
     bool underline = true,
     TextStyle textStyle,
+    TextStyle dialogTextStyle,
     TextStyle hintStyle,
     Widget suffix,
     Widget prefix,
@@ -150,7 +152,9 @@ class EJSelectorButton<T> extends StatefulWidget {
                   alignment: Alignment.center,
                   child: Text(
                     item,
-                    style: textStyle ?? Theme.of(context).textTheme.bodyText2,
+                    style: dialogTextStyle ??
+                        textStyle ??
+                        Theme.of(context).textTheme.bodyText2,
                   ),
                 ),
               ));
@@ -255,156 +259,50 @@ class _EJSelectorButtonState<T> extends State<EJSelectorButton<T>> {
         onTap: () async {
           EJSelectorItem<T> s;
           if (widget.items.isNotEmpty) {
-            s = await showDialog(
+            s = await showEJDialog<T>(
               context: context,
               barrierDismissible: true,
-              builder: (context) => _Dialog<T>(
-                selected: _selected,
-                alwaysShownScrollbar: widget.alwaysShowScrollBar,
-                selectedWidget: (child, value) {
-                  if (widget.selectedWidgetBuilder != null) {
-                    return widget.selectedWidgetBuilder(value);
-                  } else {
-                    return child;
-                  }
-                },
-                divider: widget.divider,
-                dialogHeight: widget.dialogHeight,
-                dialogWidth: widget.dialogWidth,
-                onChange: (item) {
-                  if (widget.onChange != null) {
-                    widget.onChange(item.value);
-                  }
-                },
-                items: widget.items,
-              ),
+              selected: _selected?.value,
+              alwaysShownScrollbar: widget.alwaysShowScrollBar ?? true,
+              selectedWidgetBuilder: widget.selectedWidgetBuilder,
+              divider: widget.divider,
+              dialogHeight: widget.dialogHeight,
+              dialogWidth: widget.dialogWidth,
+              items: widget.items,
             );
+            // s = await showDialog<EJSelectorItem<T>>(
+            //   context: context,
+            //   barrierDismissible: true,
+            //   builder: (context) => _Dialog<T>(
+            //     selected: _selected,
+            //     alwaysShownScrollbar: widget.alwaysShowScrollBar,
+            //     selectedWidgetBuilder: (child, value) {
+            //       if (widget.selectedWidgetBuilder != null) {
+            //         return widget.selectedWidgetBuilder(value);
+            //       } else {
+            //         return child;
+            //       }
+            //     },
+            //     divider: widget.divider,
+            //     dialogHeight: widget.dialogHeight,
+            //     dialogWidth: widget.dialogWidth,
+            //     items: widget.items,
+            //   ),
+            // );
           }
           if (s != null) {
-            _selected = s;
+            setState(() {
+              _selected = s;
+            });
+            if (widget.onChange != null) {
+              widget.onChange(s.value);
+            }
           }
           if (widget.onTap != null) {
             widget.onTap();
           }
-          setState(() {});
         });
   }
-}
-
-class _Dialog<T> extends StatefulWidget {
-  const _Dialog({
-    Key key,
-    @required this.selected,
-    @required this.items,
-    @required this.onChange,
-    @required this.selectedWidget,
-    @required this.alwaysShownScrollbar,
-    this.divider,
-    this.dialogHeight,
-    this.dialogWidth,
-  }) : super(key: key);
-
-  final EJSelectorItem<T> selected;
-  final List<EJSelectorItem<T>> items;
-  final void Function(EJSelectorItem<T> item) onChange;
-  final Widget Function(Widget child, T value) selectedWidget;
-  final Widget divider;
-  final double dialogHeight;
-  final double dialogWidth;
-  final bool alwaysShownScrollbar;
-
-  @override
-  _DialogState<T> createState() => _DialogState<T>();
-}
-
-class _DialogState<T> extends State<_Dialog<T>> {
-  ScrollController _controller;
-  List<GlobalKey> _keys;
-  List<Widget> _children;
-  int _selectedItemIndex;
-
-  @override
-  void initState() {
-    _controller = ScrollController();
-    _keys = List<GlobalKey>.generate(widget.items.length, (i) => GlobalKey());
-    final hasDivider = widget.divider != null;
-    _children = List.generate(
-        hasDivider ? widget.items.length * 2 - 1 : widget.items.length,
-        (index) {
-      if (hasDivider && index % 2 != 0) {
-        return widget.divider;
-      }
-
-      final itemIndex = hasDivider ? (index / 2).floor() : index;
-      final item = widget.items[itemIndex];
-      final isSelected =
-          widget.selected != null && item.value == widget.selected.value;
-      if (isSelected) {
-        _selectedItemIndex = itemIndex;
-      }
-
-      final child = isSelected
-          ? widget.selectedWidget(item.widget, item.value)
-          : item.widget;
-
-      return Material(
-        key: _keys[itemIndex],
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            Navigator.pop(context, item);
-            widget.onChange(item);
-          },
-          child: child,
-        ),
-      );
-    });
-    if (_selectedItemIndex != null) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        Scrollable.ensureVisible(
-          _keys[_selectedItemIndex].currentContext,
-          curve: Curves.fastOutSlowIn,
-          duration: Duration(milliseconds: 200),
-        );
-      });
-    }
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller?.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (_, constraints) => SimpleDialog(
-          children: [
-            Container(
-              width: widget.dialogWidth != null &&
-                      (widget.dialogWidth < (constraints.maxWidth - 200))
-                  ? widget.dialogWidth
-                  : (constraints.maxWidth - 200),
-              height: widget.dialogHeight != null
-                  ? (widget.dialogHeight < (constraints.maxHeight - 200)
-                      ? widget.dialogHeight
-                      : (constraints.maxHeight - 200))
-                  : null,
-              child: CupertinoScrollbar(
-                controller: _controller,
-                isAlwaysShown: widget.alwaysShownScrollbar ?? false,
-                child: SingleChildScrollView(
-                  controller: _controller,
-                  child: Column(
-                    children: _children,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
 }
 
 class EJSelectorItem<T> {

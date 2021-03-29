@@ -1,4 +1,5 @@
 import 'package:ej_selector/ej_selector.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -39,6 +40,7 @@ class _HomePageState extends State<HomePage> {
   ///
   /// 1. use [EJSelectorButton.string].
   /// 2. use [EJSelectorButton] which you can customize.
+  /// 3. use [showEJDialog] function.
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +49,10 @@ class _HomePageState extends State<HomePage> {
       StringSelectorUsingValue(),
       CustomSelector(),
       CustomSelectorUsingValue(),
+      SelectorUsingFunction(),
     ];
     return DefaultTabController(
-      length: 4,
+      length: 5,
       initialIndex: 0,
       child: Scaffold(
         appBar: AppBar(
@@ -76,6 +79,11 @@ class _HomePageState extends State<HomePage> {
               ),
               Text(
                 'Custom using value',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+              Text(
+                'Using function',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16),
               ),
@@ -265,6 +273,70 @@ class _CustomSelectorUsingValueState extends State<CustomSelectorUsingValue> {
             ),
           )
           .toList(),
+    );
+  }
+}
+
+class SelectorUsingFunction extends StatefulWidget {
+  @override
+  _SelectorUsingFunctionState createState() => _SelectorUsingFunctionState();
+}
+
+class _SelectorUsingFunctionState extends State<SelectorUsingFunction> {
+  final items = <ItemModel>[
+    ItemModel(1, 'First Item'),
+    ItemModel(2, 'Second Item'),
+    ItemModel(3, 'Third Item'),
+    ItemModel(4, 'Forth Item'),
+    ItemModel(5, 'Fifth Item'),
+  ];
+  int selectedId;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          primary: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24)),
+      onPressed: () async {
+        final s = await showEJDialog<int>(
+          context: context,
+          selected: selectedId,
+          selectedWidgetBuilder: (selectedId) => Container(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+            child: Text(
+              items.firstWhere((item) => item.id == selectedId).name,
+              style: TextStyle(fontSize: 20, color: Colors.blue),
+            ),
+          ),
+          items: items
+              .map(
+                (item) => EJSelectorItem(
+                  value: item.id,
+                  widget: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 32),
+                    child: Text(
+                      item.name,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+        );
+        if (s != null) {
+          setState(() {
+            selectedId = s.value;
+          });
+        }
+      },
+      child: Text(
+        selectedId != null
+            ? items.firstWhere((element) => element.id == selectedId).name
+            : 'Click to choose',
+        style: TextStyle(color: Colors.black),
+      ),
     );
   }
 }

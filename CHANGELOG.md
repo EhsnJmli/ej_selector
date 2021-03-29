@@ -1,4 +1,9 @@
-# [0.0.3+1]
+# [0.1.0]
+
+- Added `showEJDialog` method
+- Updated README.md
+
+## [0.0.3+1]
 
 - Updated description and readme
 

@@ -1,4 +1,8 @@
-# [0.1.0]
+# [0.1.1]
+
+- Added `buttonTextOverFlow` parameter to `string` factory
+
+## [0.1.0]
 
 - Added `showEJDialog` method
 - Updated README.md

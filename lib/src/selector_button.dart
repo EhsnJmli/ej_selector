@@ -123,97 +123,100 @@ class EJSelectorButton<T> extends StatefulWidget {
     TextStyle hintStyle,
     Widget suffix,
     Widget prefix,
+    TextOverflow buttonTextOverFlow,
     Color underlineColor = Colors.grey,
     BoxDecoration decoration,
     Alignment alignment = Alignment.center,
     EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
     EdgeInsets margin = EdgeInsets.zero,
     bool alwaysShownScrollbar = false,
-  }) =>
-      EJSelectorButton<String>(
-        hint: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (prefix != null) prefix,
-            Container(
-              alignment: alignment,
-              child: Text(hint ?? '', style: hintStyle ?? textStyle),
-            ).addExpanded(buttonWidth != null),
-            if (suffix != null) suffix,
-          ],
-        ),
-        items: List.generate(items.length, (index) {
-          final item = items[index];
-          return EJSelectorItem<String>(
-              value: item,
-              widget: Builder(
-                builder: (context) => Container(
-                  height: itemExtent,
-                  alignment: Alignment.center,
-                  child: Text(
-                    item,
-                    style: dialogTextStyle ??
-                        textStyle ??
-                        Theme.of(context).textTheme.bodyText2,
-                  ),
-                ),
-              ));
-        }),
-        alwaysShowScrollBar: alwaysShownScrollbar,
-        useValue: useValue,
-        value: value,
-        selectedWidgetBuilder: (value) => Builder(
-          builder: (context) => Container(
-            height: itemExtent,
-            alignment: Alignment.center,
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.headline5.copyWith(
-                  color: Theme.of(context).accentColor,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        divider: divider,
-        buttonBuilder: (child, value) => Builder(
-          builder: (context) => Container(
-            height: buttonHeight,
-            width: buttonWidth,
-            padding: padding,
-            margin: margin,
+  }) {
+    return EJSelectorButton<String>(
+      hint: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (prefix != null) prefix,
+          Container(
             alignment: alignment,
-            decoration: decoration ??
-                BoxDecoration(
-                  border: underline
-                      ? Border(
-                          bottom: BorderSide(color: underlineColor, width: 2))
-                      : Border(),
+            child: Text(hint ?? '', style: hintStyle ?? textStyle),
+          ).addExpanded(buttonWidth != null),
+          if (suffix != null) suffix,
+        ],
+      ),
+      items: List.generate(items.length, (index) {
+        final item = items[index];
+        return EJSelectorItem<String>(
+            value: item,
+            widget: Builder(
+              builder: (context) => Container(
+                height: itemExtent,
+                alignment: Alignment.center,
+                child: Text(
+                  item,
+                  style: dialogTextStyle ??
+                      textStyle ??
+                      Theme.of(context).textTheme.bodyText2,
                 ),
-            child: value != null
-                ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (prefix != null) prefix,
-                      Container(
-                        alignment: alignment,
-                        child: Text(
-                          value,
-                          style: textStyle ??
-                              Theme.of(context).textTheme.bodyText2,
-                        ),
-                      ).addExpanded(buttonWidth != null),
-                      if (suffix != null) suffix,
-                    ],
-                  )
-                : child,
+              ),
+            ));
+      }),
+      alwaysShowScrollBar: alwaysShownScrollbar,
+      useValue: useValue,
+      value: value,
+      selectedWidgetBuilder: (value) => Builder(
+        builder: (context) => Container(
+          height: itemExtent,
+          alignment: Alignment.center,
+          child: Text(
+            value,
+            style: Theme.of(context).textTheme.headline5.copyWith(
+                color: Theme.of(context).accentColor,
+                fontWeight: FontWeight.bold),
           ),
         ),
-        onChange: onChange,
-        onTap: onTap,
-        dialogWidth: dialogWidth,
-        dialogHeight: items.length * itemExtent,
-        key: key,
-      );
+      ),
+      divider: divider,
+      buttonBuilder: (child, value) => Builder(
+        builder: (context) => Container(
+          height: buttonHeight,
+          width: buttonWidth,
+          padding: padding,
+          margin: margin,
+          alignment: alignment,
+          decoration: decoration ??
+              BoxDecoration(
+                border: underline
+                    ? Border(
+                        bottom: BorderSide(color: underlineColor, width: 2))
+                    : Border(),
+              ),
+          child: value != null
+              ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (prefix != null) prefix,
+                    Container(
+                      alignment: alignment,
+                      child: Text(
+                        value,
+                        overflow: buttonTextOverFlow,
+                        style:
+                            textStyle ?? Theme.of(context).textTheme.bodyText2,
+                      ),
+                    ).addExpanded(buttonWidth != null),
+                    if (suffix != null) suffix,
+                  ],
+                )
+              : child,
+        ),
+      ),
+      onChange: onChange,
+      onTap: onTap,
+      dialogWidth: dialogWidth,
+      dialogHeight: items.length * itemExtent,
+      key: key,
+    );
+  }
 
   @override
   _EJSelectorButtonState<T> createState() => _EJSelectorButtonState<T>();
@@ -270,25 +273,6 @@ class _EJSelectorButtonState<T> extends State<EJSelectorButton<T>> {
               dialogWidth: widget.dialogWidth,
               items: widget.items,
             );
-            // s = await showDialog<EJSelectorItem<T>>(
-            //   context: context,
-            //   barrierDismissible: true,
-            //   builder: (context) => _Dialog<T>(
-            //     selected: _selected,
-            //     alwaysShownScrollbar: widget.alwaysShowScrollBar,
-            //     selectedWidgetBuilder: (child, value) {
-            //       if (widget.selectedWidgetBuilder != null) {
-            //         return widget.selectedWidgetBuilder(value);
-            //       } else {
-            //         return child;
-            //       }
-            //     },
-            //     divider: widget.divider,
-            //     dialogHeight: widget.dialogHeight,
-            //     dialogWidth: widget.dialogWidth,
-            //     items: widget.items,
-            //   ),
-            // );
           }
           if (s != null) {
             setState(() {

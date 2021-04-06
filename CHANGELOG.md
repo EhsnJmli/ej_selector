@@ -1,4 +1,8 @@
-# [0.1.1]
+# [0.1.1+1]
+
+- Updated documentation comments
+
+## [0.1.1]
 
 - Added `buttonTextOverFlow` parameter to `string` factory
 

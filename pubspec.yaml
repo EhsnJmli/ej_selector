@@ -1,6 +1,6 @@
 name: ej_selector
 description: A simple Item selector widget which uses dialog to select items.
-version: 0.1.1
+version: 0.1.1+1
 homepage: https://github.com/EhsnJmli/ej_selector
 
 environment:

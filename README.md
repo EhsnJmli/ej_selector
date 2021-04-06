@@ -1,5 +1,3 @@
-
-
 # EJ Selector Button
 A flutter widget that works like dropdown button, except that instead of opening the dropdown to select items, it opens a dialog. Also, You can customize its button and items.
 

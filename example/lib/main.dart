@@ -36,7 +36,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var selectedIndex = 0;
 
-  /// You can use [EJSelector] in two ways:
+  /// You can use [EJSelector] in tree ways:
   ///
   /// 1. use [EJSelectorButton.string].
   /// 2. use [EJSelectorButton] which you can customize.

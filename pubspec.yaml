@@ -1,10 +1,10 @@
 name: ej_selector
 description: A simple Item selector widget which uses dialog to select items.
-version: 0.1.1+1
+version: 1.0.0
 homepage: https://github.com/EhsnJmli/ej_selector
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
   flutter: ">=1.17.0"
 
 dependencies:

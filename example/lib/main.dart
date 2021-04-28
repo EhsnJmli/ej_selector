@@ -131,7 +131,7 @@ class StringSelectorUsingValue extends StatefulWidget {
 }
 
 class _StringSelectorUsingValueState extends State<StringSelectorUsingValue> {
-  String value;
+  String? value;
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +222,7 @@ class _CustomSelectorUsingValueState extends State<CustomSelectorUsingValue> {
     ItemModel(4, 'Forth Item'),
     ItemModel(5, 'Fifth Item'),
   ];
-  int selectedId;
+  int? selectedId;
 
   @override
   Widget build(BuildContext context) {
@@ -290,7 +290,7 @@ class _SelectorUsingFunctionState extends State<SelectorUsingFunction> {
     ItemModel(4, 'Forth Item'),
     ItemModel(5, 'Fifth Item'),
   ];
-  int selectedId;
+  int? selectedId;
 
   @override
   Widget build(BuildContext context) {

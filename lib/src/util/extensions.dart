@@ -4,15 +4,15 @@ import 'package:flutter/rendering.dart';
 
 extension MouseExtension on Widget {
   Widget mouseRegion({
-    void Function(PointerHoverEvent) onHover,
-    void Function(PointerEnterEvent) onEnter,
-    void Function(PointerExitEvent) onExit,
-    void Function() onTap,
-    void Function() onDoubleTap,
-    void Function() onLongPress,
-    void Function() onTapCancel,
-    void Function(TapDownDetails) onTapDown,
-    InkWell inkWell,
+    void Function(PointerHoverEvent)? onHover,
+    void Function(PointerEnterEvent)? onEnter,
+    void Function(PointerExitEvent)? onExit,
+    void Function()? onTap,
+    void Function()? onDoubleTap,
+    void Function()? onLongPress,
+    void Function()? onTapCancel,
+    void Function(TapDownDetails)? onTapDown,
+    InkWell? inkWell,
     MouseCursor cursor = SystemMouseCursors.click,
   }) =>
       MouseRegion(

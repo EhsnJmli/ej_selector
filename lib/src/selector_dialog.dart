@@ -2,11 +2,11 @@ part of 'selector_button.dart';
 
 class _Dialog<T> extends StatefulWidget {
   const _Dialog({
-    Key key,
-    @required this.selected,
-    @required this.items,
-    @required this.selectedWidgetBuilder,
-    @required this.alwaysShownScrollbar,
+    Key? key,
+    required this.selected,
+    required this.items,
+    required this.selectedWidgetBuilder,
+    required this.alwaysShownScrollbar,
     this.divider,
     this.dialogHeight,
     this.dialogWidth,
@@ -15,9 +15,9 @@ class _Dialog<T> extends StatefulWidget {
   final T selected;
   final List<EJSelectorItem<T>> items;
   final Widget Function(Widget child, T value) selectedWidgetBuilder;
-  final Widget divider;
-  final double dialogHeight;
-  final double dialogWidth;
+  final Widget? divider;
+  final double? dialogHeight;
+  final double? dialogWidth;
   final bool alwaysShownScrollbar;
 
   @override
@@ -25,10 +25,10 @@ class _Dialog<T> extends StatefulWidget {
 }
 
 class _DialogState<T> extends State<_Dialog<T>> {
-  ScrollController _controller;
-  List<GlobalKey> _keys;
-  List<Widget> _children;
-  int _selectedItemIndex;
+  ScrollController? _controller;
+  late List<GlobalKey> _keys;
+  late List<Widget?> _children;
+  int? _selectedItemIndex;
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _DialogState<T> extends State<_Dialog<T>> {
       }
 
       final itemIndex = hasDivider ? (index / 2).floor() : index;
-      final item = widget.items[itemIndex];
+      final EJSelectorItem<T> item = widget.items[itemIndex];
       final isSelected =
           widget.selected != null && item.value == widget.selected;
       if (isSelected) {
@@ -66,9 +66,9 @@ class _DialogState<T> extends State<_Dialog<T>> {
       );
     });
     if (_selectedItemIndex != null) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
         Scrollable.ensureVisible(
-          _keys[_selectedItemIndex].currentContext,
+          _keys[_selectedItemIndex!].currentContext!,
           curve: Curves.fastOutSlowIn,
           duration: Duration(milliseconds: 200),
         );
@@ -89,21 +89,21 @@ class _DialogState<T> extends State<_Dialog<T>> {
           children: [
             Container(
               width: widget.dialogWidth != null &&
-                      (widget.dialogWidth < (constraints.maxWidth - 200))
+                      (widget.dialogWidth! < (constraints.maxWidth - 200))
                   ? widget.dialogWidth
                   : (constraints.maxWidth - 200),
               height: widget.dialogHeight != null
-                  ? (widget.dialogHeight < (constraints.maxHeight - 200)
+                  ? (widget.dialogHeight! < (constraints.maxHeight - 200)
                       ? widget.dialogHeight
                       : (constraints.maxHeight - 200))
                   : null,
               child: Scrollbar(
                 controller: _controller,
-                isAlwaysShown: widget.alwaysShownScrollbar ?? false,
+                isAlwaysShown: widget.alwaysShownScrollbar,
                 child: SingleChildScrollView(
                   controller: _controller,
                   child: Column(
-                    children: _children,
+                    children: _children as List<Widget>,
                   ),
                 ),
               ),
@@ -113,27 +113,22 @@ class _DialogState<T> extends State<_Dialog<T>> {
       );
 }
 
-Future<EJSelectorItem<T>> showEJDialog<T>({
-  @required BuildContext context,
-  @required List<EJSelectorItem<T>> items,
-  T selected,
+Future<EJSelectorItem<T>?> showEJDialog<T>({
+  required BuildContext context,
+  required List<EJSelectorItem<T>> items,
+  T? selected,
   bool alwaysShownScrollbar = true,
-  Widget Function(T valueOfSelected) selectedWidgetBuilder,
-  Widget divider,
-  double dialogHeight,
+  Widget Function(T? valueOfSelected)? selectedWidgetBuilder,
+  Widget? divider,
+  double? dialogHeight,
   double dialogWidth = 80,
   bool barrierDismissible = true,
   Color barrierColor = Colors.black54,
-  String barrierLabel,
+  String? barrierLabel,
   bool useSafeArea = true,
   bool useRootNavigator = true,
-  RouteSettings routeSettings,
+  RouteSettings? routeSettings,
 }) async {
-  assert(alwaysShownScrollbar != null);
-  assert(items != null);
-  assert(useSafeArea != null);
-  assert(useRootNavigator != null);
-
   return showDialog<EJSelectorItem<T>>(
     context: context,
     barrierDismissible: barrierDismissible,
@@ -142,7 +137,7 @@ Future<EJSelectorItem<T>> showEJDialog<T>({
     useSafeArea: useSafeArea,
     barrierColor: barrierColor,
     barrierLabel: barrierLabel,
-    builder: (context) => _Dialog<T>(
+    builder: (context) => _Dialog<T?>(
       selected: selected,
       alwaysShownScrollbar: alwaysShownScrollbar,
       selectedWidgetBuilder: (child, value) {

@@ -220,8 +220,8 @@ class EJSelectorButton<T> extends StatefulWidget {
   _EJSelectorButtonState<T> createState() => _EJSelectorButtonState<T>();
 }
 
-class _EJSelectorButtonState<T> extends State<EJSelectorButton<T?>> {
-  EJSelectorItem<T?>? _selected;
+class _EJSelectorButtonState<T> extends State<EJSelectorButton<T>> {
+  EJSelectorItem<T>? _selected;
 
   @override
   void initState() {
@@ -232,7 +232,7 @@ class _EJSelectorButtonState<T> extends State<EJSelectorButton<T?>> {
   }
 
   @override
-  void didUpdateWidget(covariant EJSelectorButton<T?> oldWidget) {
+  void didUpdateWidget(covariant EJSelectorButton<T> oldWidget) {
     if (widget.useValue) {
       if (widget.value != null) {
         _selected =
@@ -258,9 +258,9 @@ class _EJSelectorButtonState<T> extends State<EJSelectorButton<T?>> {
             ? SystemMouseCursors.click
             : SystemMouseCursors.basic,
         onTap: () async {
-          EJSelectorItem<T?>? s;
+          EJSelectorItem<T>? s;
           if (widget.items.isNotEmpty) {
-            s = await showEJDialog<T?>(
+            s = await showEJDialog<T>(
               context: context,
               barrierDismissible: true,
               selected: _selected?.value,

@@ -12,7 +12,7 @@ class _Dialog<T> extends StatefulWidget {
     this.dialogWidth,
   }) : super(key: key);
 
-  final T selected;
+  final T? selected;
   final List<EJSelectorItem<T>> items;
   final Widget Function(Widget child, T value) selectedWidgetBuilder;
   final Widget? divider;
@@ -27,7 +27,7 @@ class _Dialog<T> extends StatefulWidget {
 class _DialogState<T> extends State<_Dialog<T>> {
   ScrollController? _controller;
   late List<GlobalKey> _keys;
-  late List<Widget?> _children;
+  late List<Widget> _children;
   int? _selectedItemIndex;
 
   @override
@@ -39,7 +39,7 @@ class _DialogState<T> extends State<_Dialog<T>> {
         hasDivider ? widget.items.length * 2 - 1 : widget.items.length,
         (index) {
       if (hasDivider && index % 2 != 0) {
-        return widget.divider;
+        return widget.divider!;
       }
 
       final itemIndex = hasDivider ? (index / 2).floor() : index;
@@ -103,7 +103,7 @@ class _DialogState<T> extends State<_Dialog<T>> {
                 child: SingleChildScrollView(
                   controller: _controller,
                   child: Column(
-                    children: _children as List<Widget>,
+                    children: _children,
                   ),
                 ),
               ),
@@ -118,7 +118,7 @@ Future<EJSelectorItem<T>?> showEJDialog<T>({
   required List<EJSelectorItem<T>> items,
   T? selected,
   bool alwaysShownScrollbar = true,
-  Widget Function(T? valueOfSelected)? selectedWidgetBuilder,
+  Widget Function(T valueOfSelected)? selectedWidgetBuilder,
   Widget? divider,
   double? dialogHeight,
   double dialogWidth = 80,
@@ -137,12 +137,12 @@ Future<EJSelectorItem<T>?> showEJDialog<T>({
     useSafeArea: useSafeArea,
     barrierColor: barrierColor,
     barrierLabel: barrierLabel,
-    builder: (context) => _Dialog<T?>(
+    builder: (context) => _Dialog<T>(
       selected: selected,
       alwaysShownScrollbar: alwaysShownScrollbar,
       selectedWidgetBuilder: (child, value) {
         if (selectedWidgetBuilder != null) {
-          return selectedWidgetBuilder(value);
+          return selectedWidgetBuilder(value!);
         } else {
           return child;
         }

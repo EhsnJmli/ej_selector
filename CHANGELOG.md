@@ -1,4 +1,8 @@
-# [1.0.0]
+# [1.0.1]
+
+- Added `disable` and `onDisableTap` parameters
+
+## [1.0.0]
 
 - Migrate to null-safety
 

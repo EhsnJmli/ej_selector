@@ -20,6 +20,8 @@ class EJSelectorButton<T> extends StatefulWidget {
     this.divider,
     this.onTap,
     this.alwaysShowScrollBar,
+    this.disable = false,
+    this.onDisableTap,
   })  : assert(
           items.isEmpty ||
               value == null ||
@@ -49,7 +51,7 @@ class EJSelectorButton<T> extends StatefulWidget {
   /// defaults to true.
   final bool useValue;
 
-  /// A placeholder widget that is displayed by the dropdown button.
+  /// A placeholder widget that is displayed by the button.
   ///
   /// If [value] is null, this widget is displayed as a placeholder for
   /// the [EJSelectorButton]'s value.
@@ -90,7 +92,7 @@ class EJSelectorButton<T> extends StatefulWidget {
   /// Called when the user selects an item.
   final void Function(T value)? onChange;
 
-  /// Called when the dropdown button is tapped.
+  /// Called when the button is tapped.
   ///
   /// This is distinct from [onChanged], which is called when the user
   /// selects an item from the dialog.
@@ -101,6 +103,14 @@ class EJSelectorButton<T> extends StatefulWidget {
 
   /// Indicates whether the scrollbar for the dialog should always be visible.
   final bool? alwaysShowScrollBar;
+
+  /// Disables the selector.
+  ///
+  /// defaults to false.
+  final bool disable;
+
+  /// Called when the button is tapped and [disable] sets on true.
+  final VoidCallback? onDisableTap;
 
   static EJSelectorButton<String> string({
     Key? key,
@@ -128,6 +138,8 @@ class EJSelectorButton<T> extends StatefulWidget {
     EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
     EdgeInsets margin = EdgeInsets.zero,
     bool alwaysShownScrollbar = false,
+    bool disable = false,
+    VoidCallback? onDisableTap,
   }) {
     return EJSelectorButton<String>(
       hint: Row(
@@ -158,6 +170,8 @@ class EJSelectorButton<T> extends StatefulWidget {
               ),
             ));
       }),
+      disable: disable,
+      onDisableTap: onDisableTap,
       alwaysShowScrollBar: alwaysShownScrollbar,
       useValue: useValue,
       value: value,
@@ -257,33 +271,35 @@ class _EJSelectorButtonState<T> extends State<EJSelectorButton<T>> {
         cursor: widget.items.isNotEmpty || widget.onTap != null
             ? SystemMouseCursors.click
             : SystemMouseCursors.basic,
-        onTap: () async {
-          EJSelectorItem<T>? s;
-          if (widget.items.isNotEmpty) {
-            s = await showEJDialog<T>(
-              context: context,
-              barrierDismissible: true,
-              selected: _selected?.value,
-              alwaysShownScrollbar: widget.alwaysShowScrollBar ?? true,
-              selectedWidgetBuilder: widget.selectedWidgetBuilder,
-              divider: widget.divider,
-              dialogHeight: widget.dialogHeight,
-              dialogWidth: widget.dialogWidth,
-              items: widget.items,
-            );
-          }
-          if (s != null) {
-            setState(() {
-              _selected = s;
-            });
-            if (widget.onChange != null) {
-              widget.onChange!(s.value);
-            }
-          }
-          if (widget.onTap != null) {
-            widget.onTap!();
-          }
-        });
+        onTap: widget.disable
+            ? widget.onDisableTap
+            : () async {
+                EJSelectorItem<T>? s;
+                if (widget.items.isNotEmpty) {
+                  s = await showEJDialog<T>(
+                    context: context,
+                    barrierDismissible: true,
+                    selected: _selected?.value,
+                    alwaysShownScrollbar: widget.alwaysShowScrollBar ?? true,
+                    selectedWidgetBuilder: widget.selectedWidgetBuilder,
+                    divider: widget.divider,
+                    dialogHeight: widget.dialogHeight,
+                    dialogWidth: widget.dialogWidth,
+                    items: widget.items,
+                  );
+                }
+                if (s != null) {
+                  setState(() {
+                    _selected = s;
+                  });
+                  if (widget.onChange != null) {
+                    widget.onChange!(s.value);
+                  }
+                }
+                if (widget.onTap != null) {
+                  widget.onTap!();
+                }
+              });
   }
 }
 

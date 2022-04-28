@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import './util/extensions.dart';
 
@@ -182,7 +181,7 @@ class EJSelectorButton<T> extends StatefulWidget {
           child: Text(
             value,
             style: Theme.of(context).textTheme.headline5!.copyWith(
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).colorScheme.secondary,
                 fontWeight: FontWeight.bold),
           ),
         ),

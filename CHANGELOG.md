@@ -1,4 +1,8 @@
-# [1.0.1]
+# [1.0.2]
+
+- Fixed issues from flutter static analysis
+
+## [1.0.1]
 
 - Added `disable` and `onDisableTap` parameters
 

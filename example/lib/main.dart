@@ -1,5 +1,4 @@
 import 'package:ej_selector/ej_selector.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() {

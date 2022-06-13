@@ -66,7 +66,7 @@ class _DialogState<T> extends State<_Dialog<T>> {
       );
     });
     if (_selectedItemIndex != null) {
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         Scrollable.ensureVisible(
           _keys[_selectedItemIndex!].currentContext!,
           curve: Curves.fastOutSlowIn,
@@ -99,7 +99,7 @@ class _DialogState<T> extends State<_Dialog<T>> {
                   : null,
               child: Scrollbar(
                 controller: _controller,
-                isAlwaysShown: widget.alwaysShownScrollbar,
+                thumbVisibility: widget.alwaysShownScrollbar,
                 child: SingleChildScrollView(
                   controller: _controller,
                   child: Column(

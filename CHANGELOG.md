@@ -1,4 +1,8 @@
-# [1.0.2+1]
+# [1.0.3]
+
+- Fixed issues from flutter static analysis
+
+## [1.0.2+1]
 
 - Fixed issues from flutter static analysis
 

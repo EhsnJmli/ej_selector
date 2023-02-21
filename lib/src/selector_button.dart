@@ -164,7 +164,7 @@ class EJSelectorButton<T> extends StatefulWidget {
                   item,
                   style: dialogTextStyle ??
                       textStyle ??
-                      Theme.of(context).textTheme.bodyText2,
+                      Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
             ));
@@ -180,7 +180,7 @@ class EJSelectorButton<T> extends StatefulWidget {
           alignment: Alignment.center,
           child: Text(
             value,
-            style: Theme.of(context).textTheme.headline5!.copyWith(
+            style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                 color: Theme.of(context).colorScheme.secondary,
                 fontWeight: FontWeight.bold),
           ),
@@ -212,7 +212,7 @@ class EJSelectorButton<T> extends StatefulWidget {
                         value,
                         overflow: buttonTextOverFlow,
                         style:
-                            textStyle ?? Theme.of(context).textTheme.bodyText2,
+                            textStyle ?? Theme.of(context).textTheme.bodyMedium,
                       ),
                     ).addExpanded(buttonWidth != null),
                     if (suffix != null) suffix,

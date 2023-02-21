@@ -295,7 +295,7 @@ class _SelectorUsingFunctionState extends State<SelectorUsingFunction> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-          primary: Colors.white,
+          backgroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24)),
       onPressed: () async {
         final s = await showEJDialog<int>(
